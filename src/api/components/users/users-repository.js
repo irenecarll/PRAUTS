@@ -65,7 +65,7 @@ async function deleteUser(id) {
 /**
  * Check if email is already taken
  * @param {string} email 
- * @returns {Promise}
+ * @returns {Promise<boolean>}
  */ 
 
 async function isEmailTaken(email) {
