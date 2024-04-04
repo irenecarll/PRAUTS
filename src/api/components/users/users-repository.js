@@ -62,10 +62,22 @@ async function deleteUser(id) {
   return User.deleteOne({ _id: id });
 }
 
+/**
+ * Check if email is already taken
+ * @param {string} email 
+ * @returns {Promise}
+ */ 
+
+async function isEmailTaken(email) {
+  const user = await User.findOne?({email});
+  return !!user;
+}
+
 module.exports = {
   getUsers,
   getUser,
   createUser,
   updateUser,
   deleteUser,
+  isEmailTaken,
 };
