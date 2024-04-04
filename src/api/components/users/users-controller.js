@@ -55,7 +55,7 @@ async function createUser(request, response, next) {
     const emailTaken = await usersService.isEmailTaken(email);
     if (emailTaken) {
       throw errorResponder(
-        errorTypes.UNPROCESSABLE_ENTITY,
+        errorTypes.EMAIL_ALREADY_TAKEN,
         'EMAIL_ALREADY_TAKEN'
       );
     }
@@ -63,7 +63,7 @@ async function createUser(request, response, next) {
     const success = await usersService.createUser(name, email, password);
     if (!success) {
       throw errorResponder(
-        errorTypes.UNPROCESSABLE_ENTITY,
+        errorTypes.SERVER,
         'Failed to create user'
       );
     }

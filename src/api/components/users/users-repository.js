@@ -69,7 +69,7 @@ async function deleteUser(id) {
  */ 
 
 async function isEmailTaken(email) {
-  const user = await User.findOne?({email});
+  const user = await User.findOne({email});
   return !!user;
 }
 
