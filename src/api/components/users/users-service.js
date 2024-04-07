@@ -109,13 +109,34 @@ async function deleteUser(id) {
 
 /**
  * Check email jika sudah ada
- * @param {string} email 
+ * @param {string} email - email
  * @returns {boolean}
  */
 
-async function isEmailTaken(email) {
-  const user = await usersRepository.getUserByEmail(email);
-  return !!user; 
+async function checkEmailExist(email) {
+  try {
+    const userExist = await usersRepository.checkUserByEmail(email);
+    return userExist;
+  } catch (error) {
+    console.error("Error", error);
+    return false;
+  }
+}
+
+/**
+ * Hash password supaya tidak mudah dihack
+ * @param {string} password - password
+ * @returns {string} - hash password
+ */
+
+async function hashUserPassword(password) {
+  try {
+    const hashedPassword = await hashPassword(password);
+    return hashedPassword;
+  } catch (error) {
+  console.error("Hashing error", error);
+  throw new Error("Password Hashing Error");
+  }
 }
 
 module.exports = {
@@ -124,5 +145,6 @@ module.exports = {
   createUser,
   updateUser,
   deleteUser,
-  isEmailTaken,
+  checkEmailExist,
+  hashUserPassword,
 };
