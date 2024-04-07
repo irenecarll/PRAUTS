@@ -51,7 +51,7 @@ async function createUser(request, response, next) {
     const email = request.body.email;
     const password = request.body.password;
 
-    // cek apakah email sudah ada atau belum
+    //cek apakah email sudah ada atau blm
     const emailTaken = await usersService.isEmailTaken(email);
     if (emailTaken) {
       throw errorResponder(
@@ -60,15 +60,8 @@ async function createUser(request, response, next) {
       );
     }
 
-    const success = await usersService.createUser(name, email, password);
-    if (!success) {
-      throw errorResponder(
-        errorTypes.UNPROCESSABLE_ENTITY,
-        'Failed to create user'
-      );
-    }
-
-    return response.status(200).json({ name, email });
+    const success = await usersService.createUser(name, email, password)
+    return response.status(201).json({ name, email });
   } catch (error) {
     return next(error);
   }
