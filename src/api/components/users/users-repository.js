@@ -69,8 +69,8 @@ async function deleteUser(id) {
  */ 
 
 async function isEmailTaken(email) {
-  const user = await User.findOne({email});
-  return !!user;
+  const User = await User.findOne({email});
+  return !!User;
 }
 
 module.exports = {
