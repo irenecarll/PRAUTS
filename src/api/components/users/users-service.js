@@ -107,10 +107,22 @@ async function deleteUser(id) {
   return true;
 }
 
+/**
+ * Check email jika sudah ada
+ * @param {string} email 
+ * @returns {boolean}
+ */
+
+async function isEmailTaken(email) {
+  const user = await usersRepository.getUserByEmail(email);
+  return !!user; 
+}
+
 module.exports = {
   getUsers,
   getUser,
   createUser,
   updateUser,
   deleteUser,
+  isEmailTaken,
 };

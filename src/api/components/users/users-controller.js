@@ -63,7 +63,7 @@ async function createUser(request, response, next) {
     const success = await usersService.createUser(name, email, password);
     if (!success) {
       throw errorResponder(
-        errorTypes.SERVER,
+        errorTypes.UNPROCESSABLE_ENTITY,
         'Failed to create user'
       );
     }
