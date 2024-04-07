@@ -52,21 +52,31 @@ async function createUser(request, response, next) {
     const password = request.body.password;
 
     //cek apakah email sudah ada atau blm
+    //memanggil fungi untuk mengecek apakah email sudah ada atau belum
     const emailTaken = await usersService.isEmailTaken(email);
     if (emailTaken) {
       throw errorResponder(
         errorTypes.EMAIL_ALREADY_TAKEN,
-        'EMAIL_ALREADY_TAKEN'
+        'This email already taken, try use another'
       );
     }
 
-    const success = await usersService.createUser(name, email, password)
-    return response.status(201).json({ name, email });
+    //jika email belum ada, lanjutkan create user
+    const success = await usersService.createUser(name, email, password);
+    if (!success) {
+      throw errorResponder(
+        errorTypes.UNPROCESSABLE_ENTITY,
+        'Unprocessable entity'
+      );
+    }
+    // Hash password
+    const hashedPassword = await hashPassword(password);
+
+    return response.status(200).json({ name, email });
   } catch (error) {
     return next(error);
   }
 }
-
 /**
  * Handle update user request
  * @param {object} request - Express request object

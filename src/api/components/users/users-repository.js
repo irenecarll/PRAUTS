@@ -63,14 +63,14 @@ async function deleteUser(id) {
 }
 
 /**
- * Check if email is already taken
- * @param {string} email 
+ * Check taken email
+ * @param {string} email - email
  * @returns {Promise<boolean>}
  */ 
 
-async function isEmailTaken(email) {
-  const User = await User.findOne({email});
-  return !!User;
+async function checkUserByEmail(email) {
+  const existingUser = await User.findOne({email});
+  return !!existingUser;
 }
 
 module.exports = {
@@ -79,5 +79,5 @@ module.exports = {
   createUser,
   updateUser,
   deleteUser,
-  isEmailTaken,
+  checkUserByEmail,
 };
