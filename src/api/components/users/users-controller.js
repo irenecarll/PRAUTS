@@ -51,26 +51,27 @@ async function createUser(request, response, next) {
     const email = request.body.email;
     const password = request.body.password;
 
-    //cek apakah email sudah ada atau blm
-    //memanggil fungi untuk mengecek apakah email sudah ada atau belum
-    const emailTaken = await usersService.isEmailTaken(email);
-    if (emailTaken) {
+    //check apakah email sudah ada sebelumnya dengan memanggil function dari service
+    const emailExist = await usersService.checkEmailExist(email);
+    if (emailExist) {
       throw errorResponder(
         errorTypes.EMAIL_ALREADY_TAKEN,
-        'This email already taken, try use another'
+        'Email Already Taken'
       );
     }
 
-    //jika email belum ada, lanjutkan create user
-    const success = await usersService.createUser(name, email, password);
+    // Hashing password supaya tidak mudah dihack
+    const hashedPassword = await usersService.hashUserPassword(password);
+    
+    
+    // Jika email belum pernah ada, maka oanggil fungsi create user
+    const success = await usersService.createUser(name, email, hashedPassword);
     if (!success) {
       throw errorResponder(
         errorTypes.UNPROCESSABLE_ENTITY,
         'Unprocessable entity'
       );
     }
-    // Hash password
-    const hashedPassword = await hashPassword(password);
 
     return response.status(200).json({ name, email });
   } catch (error) {
