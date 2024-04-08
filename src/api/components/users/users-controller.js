@@ -50,6 +50,7 @@ async function createUser(request, response, next) {
     const name = request.body.name;
     const email = request.body.email;
     const password = request.body.password;
+    
 
     //check apakah email sudah ada sebelumnya dengan memanggil function dari service
     const emailExist = await usersService.checkEmailExist(email);
@@ -64,7 +65,7 @@ async function createUser(request, response, next) {
     const hashedPassword = await usersService.hashUserPassword(password);
     
     
-    // Jika email belum pernah ada, maka oanggil fungsi create user
+    // Jika email belum pernah ada, maka panggil fungsi create user
     const success = await usersService.createUser(name, email, hashedPassword);
     if (!success) {
       throw errorResponder(
