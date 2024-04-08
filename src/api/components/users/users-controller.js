@@ -167,7 +167,7 @@ async function updatePassword(request, response, next) {
     if (!success) {
       throw errorResponder(
         errorTypes.INVALID_PASSWORD, // jika gagal maka akan menampilkan pesan error UNAUTHORIZED
-        'Change password failed, make sure you old password is correct'
+        'Change password failed, make sure your old password is correct'
       );
     }
 
