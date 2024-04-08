@@ -166,7 +166,7 @@ async function updatePassword(request, response, next) {
     const success = await usersService.changePassword(id, oldPassword, newPassword);
     if (!success) {
       throw errorResponder(
-        errorTypes.UNAUTHORIZED, // jika gagal maka akan menampilkan pesan error UNAUTHORIZED
+        errorTypes.INVALID_PASSWORD, // jika gagal maka akan menampilkan pesan error UNAUTHORIZED
         'Change password failed, make sure you old password is correct'
       );
     }
