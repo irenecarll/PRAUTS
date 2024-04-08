@@ -1,6 +1,7 @@
 const usersService = require('./users-service');
 const { errorResponder, errorTypes } = require('../../../core/errors');
 
+const bcrypt = require('bcrypt'); // import modul bcrypt
 /**
  * Handle get list of users request
  * @param {object} request - Express request object
@@ -138,10 +139,50 @@ async function deleteUser(request, response, next) {
   }
 }
 
+/**
+ * update password
+ * @param {object} request - Express request object
+ * @param {object} response - Express response object
+ * @param {object} next - Express route middlewares
+ * @returns {object} Response object or pass an error to the next route
+ */
+
+async function updatePassword(request, response, next) {
+  try {
+    const id = request.params.id;
+    const oldPassword = request.body.oldPassword;
+    const newPassword = request.body.newPassword;
+    const confirmNewPassword = request.body.confirmNewPassword;
+
+    // melakukan pengecekan apakah konfirmasi password baru sama dengan password baru yang diinput
+    if (newPassword !== confirmNewPassword) {
+      throw errorResponder(
+        errorTypes.INVALID_PASSWORD, // jika tidak cocok maka akan menampilkan invalid password
+        'Password confirm do not match'
+      );
+    }
+
+    // memanggil fungsi changePassword dari users-service.js
+    const success = await usersService.changePassword(id, oldPassword, newPassword);
+    if (!success) {
+      throw errorResponder(
+        errorTypes.UNAUTHORIZED, // jika gagal maka akan menampilkan pesan error UNAUTHORIZED
+        'Change password failed, make sure you old password is correct'
+      );
+    }
+
+    return response.status(200).json({ message: 'Password changed successfully' });
+  } catch (error) {
+    return next(error);
+  }
+}
+
+
 module.exports = {
   getUsers,
   getUser,
   createUser,
   updateUser,
   deleteUser,
+  updatePassword,
 };

@@ -1,6 +1,7 @@
 const usersRepository = require('./users-repository');
 const { hashPassword } = require('../../../utils/password');
 
+const bcrypt = require('bcrypt'); // import modul bycrypt untuk compare kesamaan password
 /**
  * Get list of users
  * @returns {Array}
@@ -63,12 +64,13 @@ async function createUser(name, email, password, _passwordconfirm) {
 }
 
 /**
- * Update existing user
+ * Update user
  * @param {string} id - User ID
  * @param {string} name - Name
  * @param {string} email - Email
  * @returns {boolean}
  */
+
 async function updateUser(id, name, email) {
   const user = await usersRepository.getUser(id);
 
@@ -140,6 +142,45 @@ async function hashUserPassword(password) {
   }
 }
 
+/**
+ * Change password
+ * @param {string} id - User ID
+ * @param {string} oldPassword - Old password
+ * @param {string} newPassword - New password
+ * @returns {boolean} - menghasilkan nilai boolean jika suatu proses berhasil atau gagal
+ */
+
+async function changePassword(id, oldPassword, newPassword) {
+  // melihat data user
+  const user = await usersRepository.getUser(id);
+
+  // cek apakah data user ada di database
+  if (!user) {
+    return null; // jika data user tidak ada maka akan mengembalikan nilai null
+  }
+
+  // mencocokkan password lama dengan input password lama yang dimasukkan pengguna saat ini
+  const passwordMatch = await bcrypt.compare (oldPassword, user.password);
+  if (!passwordMatch) {
+    return false; // jika tidak matching maka akan mengembalikan nilai false
+  }
+
+  // melakukan hashing untuk password baru supaya tidak mudah di hack
+  const hashedNewPassword = await hashPassword(newPassword);
+
+  // update password
+  try {
+    await usersRepository.updatePassword(id, hashedNewPassword); // menanggil fungsi update password dari usersRepository
+    return true; // mengembalikan nilai true jika berhasil update password
+  } catch (error) {
+    console.error("Error while updating password:", error);
+    return null; // menampilkan output error jika tidak berhasil update password
+  }
+}
+
+
+
+
 module.exports = {
   getUsers,
   getUser,
@@ -148,4 +189,5 @@ module.exports = {
   deleteUser,
   checkEmailExist,
   hashUserPassword,
+  changePassword,
 };

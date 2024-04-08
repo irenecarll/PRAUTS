@@ -74,6 +74,27 @@ async function checkUserByEmail(email) {
   return !!existingUser;
 }
 
+/**
+ * Update password
+ * @param {string} id - user ID
+ * @param {string} newPassword - New password
+ * @returns {Promise}
+ */
+
+async function updatePassword(id, newPassword) {
+  return User.updateOne(
+    {
+      _id: id, //mencari dan mencocokkan id pengguna yang ingin diupdate passwordnya
+    },
+    {
+      $set: { // menggunakan set untuk mengganti nilai password lama dengan nilai password baru
+        password: newPassword,
+      },
+    }
+  );
+}
+
+
 module.exports = {
   getUsers,
   getUser,
@@ -81,4 +102,5 @@ module.exports = {
   updateUser,
   deleteUser,
   checkUserByEmail,
+  updatePassword,
 };
